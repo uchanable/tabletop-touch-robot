@@ -122,6 +122,61 @@ python analyze_eda.py
 
 This reads all CSVs in `rawdata/` and outputs `eda_features_reproduced.csv`. The script has been verified to produce identical results to `eda_features.csv` (532/532 values matched).
 
+---
+
+### Force (`data/force/`)
+
+Force data from the stroking experiment. Target force: 0.4 N. Sampling rate: ~100 ms.
+
+#### Master CSV (`master/`)
+
+20 files: `S{NN}_master.csv`. Each contains all 4 conditions (2 directions × 2 controllers) with per-sample data.
+
+| Column | Description | Unit |
+|--------|-------------|------|
+| `participant` | Participant ID (S01–S20) | |
+| `direction` | `parallel` or `orthogonal` | |
+| `control` | `ff_pid` (FF+PID) or `pid_only` (PID-only) | |
+| `cycle` | Cycle number (1–10) | |
+| `stroke` | `f` (forward), `b` (backward), `s` (stop/turnaround) | |
+| `time_ms` | Raw timestamp | ms |
+| `force_g` | Raw force | grams |
+| `force_N` | Force in Newtons (`force_g × 0.00981`) | N |
+| `pos_y_cm` | Y position (stroking direction) | cm |
+| `pos_x_cm` | X position (perpendicular) | cm |
+| `angle_deg` | Motor angle | degrees |
+| `speed_cms` | Stroking speed | cm/s |
+| `label_moving` | 1 = position changing, 0 = stationary | |
+| `label_steady` | 1 = constant-velocity segment (analyzed), 0 = excluded | |
+
+The three-stage filtering pipeline (see project page) uses `stroke`, `label_moving`, and `label_steady` to extract steady-state force samples. Only rows where `label_steady = 1` are used for metric computation.
+
+#### Per-participant metrics (`ral_statistics.csv`)
+
+80 rows (20 participants × 4 conditions). One row per participant × direction × control.
+
+| Column | Description |
+|--------|-------------|
+| `mean` | Mean force (N) |
+| `rmse` | RMSE vs 0.4 N target (N) |
+| `mae` | Mean absolute error (N) |
+| `cv` | Coefficient of variation (%) |
+| `delta_f` | Forward–backward hysteresis (N) |
+| `avg_delta_mean` | MASD — smoothness metric (N) |
+
+#### Condition summary (`ral_summary.csv`)
+
+4 rows (2 directions × 2 controls). Group-level descriptive statistics (M ± SD across 20 participants).
+
+#### Advanced analysis (`advanced/`)
+
+| File | Description |
+|------|-------------|
+| `cycle_trend.csv` | Spearman ρ (cycle vs RMSE) per participant × condition |
+| `variance_decomposition.csv` | Between-participant vs within-participant RMSE variability |
+| `icc_results.csv` | ICC(3,k) for 10-cycle RMSE reliability |
+| `paired_tests.csv` | FF+PID vs PID-only paired comparisons per direction |
+
 ## Project Page
 
 See the [project page](https://tabletop-touch-project.netlify.app/) for detailed supplementary materials including force metrics, measurement reliability, EDA analysis, and calibration algorithms.

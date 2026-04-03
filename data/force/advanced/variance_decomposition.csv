@@ -1,0 +1,5 @@
+direction,control,condition,between_sd,within_sd,ratio
+parallel,ff_pid,parallel_FF+PID,0.01371,0.00206,6.661
+parallel,pid_only,parallel_PID,0.01131,0.0041,2.762
+orthogonal,ff_pid,orthogonal_FF+PID,0.00628,0.00338,1.854
+orthogonal,pid_only,orthogonal_PID,0.01344,0.00988,1.36

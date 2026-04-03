@@ -1,0 +1,5 @@
+direction,control,condition,icc_type,icc_value,ci95_lower,ci95_upper,p_value
+parallel,ff_pid,parallel_FF+PID,ICC3k,0.998,1.0,1.0,0.0
+parallel,pid_only,parallel_PID,ICC3k,0.9692,0.94,0.99,0.0
+orthogonal,ff_pid,orthogonal_FF+PID,ICC3k,0.9651,0.94,0.98,0.0
+orthogonal,pid_only,orthogonal_PID,ICC3k,0.854,0.74,0.93,0.0

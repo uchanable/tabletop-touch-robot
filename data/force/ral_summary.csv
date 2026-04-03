@@ -1,0 +1,5 @@
+direction,control,condition,n_participants,mean_M,mean_SD,rmse_M,rmse_SD,mae_M,mae_SD,cv_M,cv_SD,delta_f_M,delta_f_SD,avg_delta_M,avg_delta_SD
+parallel,ff_pid,parallel_FF+PID,20,0.42352,0.00983,0.06583,0.01371,0.05881,0.01122,14.3835,2.72196,0.10439,0.01863,0.00707,0.00196
+parallel,pid_only,parallel_PID,20,0.41535,0.00337,0.0809,0.01131,0.07123,0.01052,19.1155,2.6029,0.13047,0.02886,0.0085,0.00164
+orthogonal,ff_pid,orthogonal_FF+PID,20,0.39055,0.01244,0.0356,0.00628,0.03085,0.00645,8.2785,1.48504,0.03183,0.01635,0.0189,0.00403
+orthogonal,pid_only,orthogonal_PID,20,0.38127,0.00719,0.05028,0.01344,0.04218,0.00905,12.013,3.74351,0.03125,0.02539,0.02666,0.00581
