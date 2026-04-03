@@ -8,7 +8,7 @@ Resources for the paper: *A Tabletop Mobile Robot for CT-Optimal Touch: Force-Co
 |-----------|-------------|--------|
 | `control/` | Robot control software (holonomic base, IMU heading PID, FF+PID force control, calibration) | Coming soon |
 | `data/` | Experiment raw data ($n = 20$): force recordings, EDA signals, questionnaire responses | Available |
-| `cad/` | CAD files for robot chassis, stroking module, parallel-linkage mechanism | Coming soon |
+| `cad/` | CAD files for robot chassis, stroking module, parallel-linkage mechanism | Available |
 | `3d_scan/` | 20 participants' forearm 3D surface scans (OBJ format) | Coming soon |
 
 ## Data
@@ -198,6 +198,34 @@ python analyze_force.py
 ```
 
 No external dependencies required (Python 3.8+ standard library only). This reads all master CSVs and outputs `ral_statistics_reproduced.csv`. The script has been verified to produce identical results to `ral_statistics.csv` (1040/1040 values matched).
+
+---
+
+## CAD
+
+3D CAD files for the tabletop mobile robot, designed in Autodesk Inventor.
+
+- `.iam` — Assembly files
+- `.ipt` — Part files
+- `.dwg` / `.pdf` — 2D drawings
+
+| Directory | Description |
+|-----------|-------------|
+| `MOBITOUCH.iam`, `Assy.iam` | Top-level robot assembly |
+| `mobile_robot/` | Holonomic mobile base: enclosure, lid, omniwheels, motor housings, odometry sensor, OpenCM controller board |
+| `stroke_module/` | Parallel-linkage stroking module: link arms, gear assemblies, load cell (SC616C), motor adapter, shafts, spacers |
+| `field/` | Experiment field: SUS430 steel plate, surface paper, protective barriers, markers |
+| `emergency_stop/` | Emergency stop switch enclosure and circuit board |
+| `jig.ipt` | Assembly/calibration jig |
+| `plathome_usbhub.ipt` | USB hub platform |
+
+**Note on Japanese filenames:** Some part files use Japanese names to maintain Autodesk Inventor assembly references. Translations: `平歯車` = spur gear, `Φ` = diameter.
+
+**Hardware references:**
+- Motors: Dynamixel XL-320 (×3)
+- Load cell: SC616C
+- Odometry: SparkFun Qwiic OTOS
+- Controller: OpenCM 9.04
 
 ## Project Page
 
