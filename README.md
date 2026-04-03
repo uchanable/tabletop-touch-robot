@@ -112,6 +112,16 @@ Maps each EDA recording to the experimental event timing.
 
 The phasic component is obtained by applying a 2nd-order Butterworth bandpass filter (0.05–3.0 Hz) with zero-phase distortion (`filtfilt`). Peak detection is then performed on the filtered signal to identify individual SCR events. The baseline is defined as the mean SCR level during the 5 s immediately preceding stroking onset.
 
+**Reproducing the analysis:**
+
+```bash
+cd data/eda
+pip install numpy scipy
+python analyze_eda.py
+```
+
+This reads all CSVs in `rawdata/` and outputs `eda_features_reproduced.csv`. The script has been verified to produce identical results to `eda_features.csv` (532/532 values matched).
+
 ## Project Page
 
 See the [project page](https://tabletop-touch-project.netlify.app/) for detailed supplementary materials including force metrics, measurement reliability, EDA analysis, and calibration algorithms.
