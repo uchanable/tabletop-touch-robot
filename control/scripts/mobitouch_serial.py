@@ -430,7 +430,7 @@ class RecordHandler:
             self._start_recording()
         elif line.startswith("[LOG],") and self._recording:
             self._write_log(line)
-        elif "=== 往復完了 ===" in line and self._recording:  # "Round-trip complete" marker from Arduino
+        elif "=== Round Trip Complete ===" in line and self._recording:
             self._finish_recording()
 
     def _start_recording(self):
@@ -503,11 +503,11 @@ class CalibrateHandler:
 
         # --- Trajectory data parsing ---
         # NOTE: Japanese strings below are protocol markers sent by Arduino firmware
-        if "往路データ (Forward):" in stripped:  # "Forward path data"
+        if "Forward path data:" in stripped:
             self._state = "forward"
             self.forward_data = []
             return
-        if "復路データ (Backward):" in stripped:  # "Backward path data"
+        if "Backward path data:" in stripped:
             self._state = "backward"
             self.backward_data = []
             return
@@ -522,7 +522,7 @@ class CalibrateHandler:
                     self.backward_data.append(point)
                 return
             if stripped and not stripped.startswith("{") and self._state != "idle":
-                if "---" in stripped or "===" in stripped or stripped.startswith("復路") or stripped.startswith("往路"):
+                if "---" in stripped or "===" in stripped or stripped.startswith("Backward") or stripped.startswith("Forward"):
                     pass
                 else:
                     self._state = "idle"
@@ -536,19 +536,19 @@ class CalibrateHandler:
             self._flush_excel_section()
             self._excel_current_direction = "backward"
             return
-        if "=== データ出力完了 ===" in stripped:  # "Data output complete" marker from Arduino
+        if "=== Data Output Complete ===" in stripped:
             self._flush_excel_section()
             self._excel_current_direction = None
             self._on_data_complete()
             return
 
         if self._excel_current_direction:
-            if "静的計測データ" in stripped:  # "Static measurement data" marker from Arduino
+            if "Static measurement data" in stripped:
                 self._flush_excel_section()
                 self._excel_current_section = "static_measurement"
                 self._excel_rows = []
                 return
-            dyn_match = re.search(r"動的(\d+)回目データ", stripped)  # "Dynamic Nth trial data" marker from Arduino
+            dyn_match = re.search(r"Dynamic trial (\d+) data", stripped)
             if dyn_match:
                 self._flush_excel_section()
                 self._excel_current_section = f"dynamic_trial_{dyn_match.group(1)}"
