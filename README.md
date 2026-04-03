@@ -115,8 +115,9 @@ Maps each EDA recording to the experimental event timing.
 *SCR (Phasic):* A 2nd-order Butterworth bandpass filter (0.05–3.0 Hz) was applied with zero-phase distortion (`filtfilt`), following Benedek & Kaernbach (2010). This direct bandpass approach was chosen over continuous decomposition for simplicity and transparency. Peak detection was performed on the filtered signal. Baseline: mean SCR level during 5 s pre-stroking onset.
 
 **References:**
-- Boucsein, W. (2012). *Electrodermal Activity* (2nd ed.). Springer.
-- da Silva, H. P., et al. (2014). BITalino: A novel hardware framework for physiological computing. *PhyCS 2014*.
+- Boucsein, W., Fowles, D. C., Grimnes, S., et al. (2012). Publication recommendations for electrodermal measurements. *Psychophysiology*, 49(8), 1017–1034.
+- da Silva, H. P., Fred, A., & Martins, R. (2014). Biosignals for everyone. *IEEE Pervasive Computing*, 13(4), 64–71.
+- da Silva, H. P., Lourenço, A., Fred, A., & Martins, R. (2014). BIT: Biosignal Igniter Toolkit. *Computer Methods and Programs in Biomedicine*, 115(1), 20–32.
 - Benedek, M., & Kaernbach, C. (2010). A continuous measure of phasic electrodermal activity. *J. Neuroscience Methods*, 190(1), 80–91.
 
 **Reproducing the analysis:**
