@@ -9,7 +9,7 @@ Resources for the paper: *A Tabletop Mobile Robot for CT-Optimal Touch: Force-Co
 | `control/` | Robot control software (holonomic base, IMU heading PID, FF+PID force control, calibration) | Coming soon |
 | `data/` | Experiment raw data ($n = 20$): force recordings, EDA signals, questionnaire responses | Available |
 | `cad/` | CAD files for robot chassis, stroking module, parallel-linkage mechanism | Available |
-| `3d_scan/` | 20 participants' forearm 3D surface scans (OBJ format) | Coming soon |
+| `3d_scan/` | 20 participants' forearm 3D surface scans (OBJ + USDZ) | Pending |
 
 ## Data
 
@@ -226,6 +226,12 @@ No external dependencies required (Python 3.8+ standard library only). This read
 - Load cell: SC616C
 - Odometry: SparkFun Qwiic OTOS
 - Controller: OpenCM 9.04
+
+---
+
+## 3D Forearm Scans (`3d_scan/`)
+
+**Status: Pending.** Raw 3D scans (OBJ with textures, USDZ) of all 20 participants' forearms have been collected using Polycam (LiDAR). The scans require trimming (removing background geometry) before release. Analysis direction (e.g., forearm curvature vs calibration quality, simulation contact modeling) is under development. Data will be released in a future update.
 
 ## Project Page
 
