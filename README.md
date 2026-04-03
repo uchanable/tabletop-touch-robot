@@ -42,7 +42,7 @@ Each participant provided 4 responses (2 directions × 2 controllers), yielding 
 
 ### EDA (`data/eda/`)
 
-Electrodermal activity recorded using a BITalino (r)evolution board at 10 Hz. Ag/AgCl electrodes on the left index and middle fingertips.
+Electrodermal activity (EDA) reflects sympathetic arousal through changes in skin conductance (Boucsein, 2012). EDA was recorded using a BITalino (r)evolution board (PLUX Wireless Biosignals; da Silva et al., 2014) at 10 Hz. Disposable Ag/AgCl electrodes were placed on the palmar surface of the left index and middle fingertips, following standard placement (Boucsein, 2012). A 5-minute stabilization period preceded data collection.
 
 > **Note:** Participant S18 is included in the data but was excluded from all statistical analyses due to near-zero SCL values (0.47–0.65 µS vs group mean ~9–10 µS), attributable to dry skin or poor electrode contact.
 
@@ -108,9 +108,16 @@ Maps each EDA recording to the experimental event timing.
 | `scr_count` | Number of SCR peaks detected | count |
 | `scr_auc_baseline` | Area under phasic signal, baseline-corrected (5 s pre-stroking mean) | µS·s |
 
-**Signal processing for SCR extraction:**
+**Signal processing:**
 
-The phasic component is obtained by applying a 2nd-order Butterworth bandpass filter (0.05–3.0 Hz) with zero-phase distortion (`filtfilt`). Peak detection is then performed on the filtered signal to identify individual SCR events. The baseline is defined as the mean SCR level during the 5 s immediately preceding stroking onset.
+*SCL (Tonic):* The raw EDA signal was used directly without tonic/phasic decomposition (e.g., NeuroKit2). Raw conductance values served as the SCL measure.
+
+*SCR (Phasic):* A 2nd-order Butterworth bandpass filter (0.05–3.0 Hz) was applied with zero-phase distortion (`filtfilt`), following Benedek & Kaernbach (2010). This direct bandpass approach was chosen over continuous decomposition for simplicity and transparency. Peak detection was performed on the filtered signal. Baseline: mean SCR level during 5 s pre-stroking onset.
+
+**References:**
+- Boucsein, W. (2012). *Electrodermal Activity* (2nd ed.). Springer.
+- da Silva, H. P., et al. (2014). BITalino: A novel hardware framework for physiological computing. *PhyCS 2014*.
+- Benedek, M., & Kaernbach, C. (2010). A continuous measure of phasic electrodermal activity. *J. Neuroscience Methods*, 190(1), 80–91.
 
 **Reproducing the analysis:**
 
