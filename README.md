@@ -89,7 +89,7 @@ Maps each EDA recording to the experimental event timing.
 
 #### Extracted features (`eda_features.csv`)
 
-76 rows (S18 excluded from analysis, but data is present). One row per participant × direction × control.
+76 rows (S18 excluded from analysis, but data are present). One row per participant × direction × control.
 
 **SCL (tonic) features:**
 
