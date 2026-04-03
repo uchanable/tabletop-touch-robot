@@ -177,6 +177,28 @@ The three-stage filtering pipeline (see project page) uses `stroke`, `label_movi
 | `icc_results.csv` | ICC(3,k) for 10-cycle RMSE reliability |
 | `paired_tests.csv` | FF+PID vs PID-only paired comparisons per direction |
 
+#### Metric definitions
+
+All metrics are computed over steady-state data (`label_steady = 1`) for each participant–condition pair (cycles 1–10 pooled). Target force $F_{\text{target}} = 0.4\,\text{N}$.
+
+| Metric | Formula | Description |
+|--------|---------|-------------|
+| Mean | $\frac{1}{n}\sum_{i=1}^{n} F_i$ | Average force during stroking |
+| RMSE | $\sqrt{\frac{1}{n}\sum_{i=1}^{n}(F_i - F_{\text{target}})^2}$ | Root mean squared error vs target |
+| MAE | $\frac{1}{n}\sum_{i=1}^{n}\|F_i - F_{\text{target}}\|$ | Mean absolute error vs target |
+| CV | $\frac{\text{SD}(F)}{\overline{F}} \times 100$ | Coefficient of variation (%) |
+| ΔF | $\|\overline{F}_{\text{fwd}} - \overline{F}_{\text{bwd}}\|$ | Forward–backward hysteresis |
+| MASD | $\frac{1}{K}\sum_{k=1}^{K}\left(\frac{1}{n_k-1}\sum_{i=2}^{n_k}\|F_i^{(k)} - F_{i-1}^{(k)}\|\right)$ | Smoothness (per-cycle, then averaged) |
+
+**Reproducing the analysis:**
+
+```bash
+cd data/force
+python analyze_force.py
+```
+
+No external dependencies required (Python 3.8+ standard library only). This reads all master CSVs and outputs `ral_statistics_reproduced.csv`. The script has been verified to produce identical results to `ral_statistics.csv` (1040/1040 values matched).
+
 ## Project Page
 
 See the [project page](https://tabletop-touch-project.netlify.app/) for detailed supplementary materials including force metrics, measurement reliability, EDA analysis, and calibration algorithms.
