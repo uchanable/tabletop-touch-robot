@@ -17,11 +17,11 @@ Resources for the paper: *A Tabletop Mobile Robot for CT-Optimal Touch: Force-Co
 
 After each 10-cycle stroking condition, participants rated the tactile experience on three 7-point Likert scales (1 = not at all, 7 = very much):
 
-| Scale | Japanese | Question |
-|-------|----------|----------|
-| Comfort | 快適 (kaiteki) | "The stroking sensation felt pleasant" |
-| Naturalness | 自然 (shizen) | "The stroking felt natural" |
-| Consistency | 一定 (ittei) | "The force felt consistent during stroking" |
+| Scale | Question |
+|-------|----------|
+| Comfort | "The stroking sensation felt pleasant" |
+| Naturalness | "The stroking felt natural" |
+| Consistency | "The force felt consistent during stroking" |
 
 **File:** `questionnaire.csv`
 
