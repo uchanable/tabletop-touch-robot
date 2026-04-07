@@ -5,12 +5,19 @@ Reads the per-participant master CSVs in master/ and computes all six force
 metrics reported in the paper, matching the pipeline described in the
 supplementary materials.
 
-Metrics (computed over steady-state data, label_steady=1):
+Data selection:
+  - All metrics (Mean, SD, RMSE, MAE, CV, MASD, per-cycle RMSE):
+    ALL rows within cycles 1-10 are used. No filtering applied.
+  - Hysteresis (delta_f = |mean(F_fwd) - mean(F_bwd)|):
+    Only rows where stroke in ("f", "b") AND label_moving == 1.
+    This excludes turnaround stops but retains acceleration/deceleration.
+
+Metrics:
   Mean   = (1/n) * sum(F_i)
   RMSE   = sqrt((1/n) * sum((F_i - F_target)^2))
   MAE    = (1/n) * sum(|F_i - F_target|)
   CV     = SD(F) / mean(F) * 100
-  dF     = |mean(F_fwd) - mean(F_bwd)|
+  dF     = |mean(F_fwd) - mean(F_bwd)|   [moving-phase data only]
   MASD   = (1/K) * sum_k( (1/(n_k-1)) * sum_i(|F_i - F_{i-1}|) )
 
 Requirements:
@@ -27,7 +34,7 @@ import csv
 import math
 from pathlib import Path
 
-# ── Constants ──
+# -- Constants --
 MASTER_DIR = Path(__file__).parent / "master"
 OUTPUT_FILE = Path(__file__).parent / "ral_statistics_reproduced.csv"
 TARGET_FORCE_N = 0.4
@@ -62,22 +69,26 @@ def compute_cv(forces: list[float]) -> float:
     return (sd / mean_f * 100) if mean_f != 0 else 0
 
 
-def compute_delta_f(rows: list[dict]) -> tuple[float, float, float]:
+def compute_delta_f(rows: list[dict]) -> tuple[float, float, float, float]:
     """dF = |mean(F_forward) - mean(F_backward)|
 
-    Returns: (fwd_mean, bwd_mean, delta_f)
+    Computed from moving-phase data only (stroke in f/b, label_moving=1).
+    Returns: (fwd_mean, bwd_mean, delta_f, delta_f_pct)
     """
     fwd = [float(r["force_N"]) for r in rows if r["stroke"] == "f"]
     bwd = [float(r["force_N"]) for r in rows if r["stroke"] == "b"]
     fwd_mean = sum(fwd) / len(fwd) if fwd else 0
     bwd_mean = sum(bwd) / len(bwd) if bwd else 0
-    return fwd_mean, bwd_mean, abs(fwd_mean - bwd_mean)
+    delta_f = abs(fwd_mean - bwd_mean)
+    delta_f_pct = (delta_f / TARGET_FORCE_N * 100) if TARGET_FORCE_N != 0 else 0
+    return fwd_mean, bwd_mean, delta_f, delta_f_pct
 
 
 def compute_masd(rows: list[dict]) -> tuple[float, float]:
     """MASD = (1/K) * sum_k( (1/(n_k - 1)) * sum_i( |F_i - F_{i-1}| ) )
 
-    Computed per cycle, then averaged across K cycles.
+    Mean of adjacent-sample force changes per cycle, then averaged across
+    K cycles. Lower values indicate temporally smoother force delivery.
     Returns: (masd_mean, masd_sd)
     """
     cycles = sorted(set(int(r["cycle"]) for r in rows))
@@ -151,36 +162,51 @@ def main():
 
         for direction in directions:
             for control in controls:
-                # Filter: steady-state moving data only
-                cond_rows = [
+                # All data within cycles 1-10 (no filtering)
+                all_cond_rows = [
+                    r for r in rows
+                    if r["direction"] == direction
+                    and r["control"] == control
+                    and int(r["cycle"]) <= MAX_CYCLE
+                ]
+
+                # Hysteresis only: stroke in (f, b) AND label_moving == 1
+                # Excludes turnaround stops but keeps accel/decel
+                moving_rows = [
                     r for r in rows
                     if r["direction"] == direction
                     and r["control"] == control
                     and int(r["cycle"]) <= MAX_CYCLE
                     and r["stroke"] in ("f", "b")
                     and int(r["label_moving"]) == 1
-                    and int(r["label_steady"]) == 1
                 ]
 
-                if not cond_rows:
+                if not all_cond_rows:
                     print(f"  {participant} {direction} {control}: NO DATA")
                     continue
 
-                forces = [float(r["force_N"]) for r in cond_rows]
+                forces = [float(r["force_N"]) for r in all_cond_rows]
                 n = len(forces)
                 mean_f = compute_mean(forces)
                 sd_f = math.sqrt(sum((f - mean_f) ** 2 for f in forces) / (n - 1)) if n > 1 else 0
                 rmse = compute_rmse(forces, TARGET_FORCE_N)
                 mae = compute_mae(forces, TARGET_FORCE_N)
                 cv = compute_cv(forces)
-                fwd_mean, bwd_mean, delta_f = compute_delta_f(cond_rows)
-                masd_mean, masd_sd = compute_masd(cond_rows)
-                cr_mean, cr_sd, n_cycles = compute_per_cycle_rmse(cond_rows)
+
+                # Delta_f from moving-phase rows only
+                fwd_mean, bwd_mean, delta_f, delta_f_pct = compute_delta_f(moving_rows)
+
+                # MASD from all data (no filtering)
+                masd_mean, masd_sd = compute_masd(all_cond_rows)
+
+                # Per-cycle RMSE from all data (no filtering)
+                cr_mean, cr_sd, n_cycles = compute_per_cycle_rmse(all_cond_rows)
 
                 row = {
                     "participant": participant,
                     "direction": direction,
                     "control": control,
+                    "condition": f"{direction}_{'FF+PID' if control == 'ff_pid' else 'PID'}",
                     "mean": round(mean_f, 5),
                     "sd": round(sd_f, 5),
                     "rmse": round(rmse, 5),
@@ -193,6 +219,7 @@ def main():
                     "fwd_mean": round(fwd_mean, 5),
                     "bwd_mean": round(bwd_mean, 5),
                     "delta_f": round(delta_f, 5),
+                    "delta_f_pct": round(delta_f_pct, 2),
                     "avg_delta_mean": round(masd_mean, 6),
                     "avg_delta_sd": round(masd_sd, 6),
                 }

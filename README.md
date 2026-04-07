@@ -155,9 +155,9 @@ Force data from the stroking experiment. Target force: 0.4 N. Sampling rate: ~10
 | `angle_deg` | Motor angle | degrees |
 | `speed_cms` | Stroking speed | cm/s |
 | `label_moving` | 1 = position changing, 0 = stationary | |
-| `label_steady` | 1 = constant-velocity segment (analyzed), 0 = excluded | |
+| `label_steady` | 1 = constant-velocity segment, 0 = acceleration/deceleration | |
 
-The three-stage filtering pipeline (see project page) uses `stroke`, `label_moving`, and `label_steady` to extract steady-state force samples. Only rows where `label_steady = 1` are used for metric computation.
+All data within cycles 1--10 are used for metric computation. For ΔF (hysteresis), turnaround stops are excluded (`stroke` $\in$ {`f`, `b`} and `label_moving` = 1) to separate forward and backward stroke phases.
 
 #### Per-participant metrics (`ral_statistics.csv`)
 
@@ -187,7 +187,7 @@ The three-stage filtering pipeline (see project page) uses `stroke`, `label_movi
 
 #### Metric definitions
 
-All metrics are computed over steady-state data (`label_steady = 1`) for each participant–condition pair (cycles 1–10 pooled). Target force $F_{\text{target}} = 0.4\,\text{N}$.
+All metrics are computed over all data within cycles 1–10 for each participant–condition pair. Target force $F_{\text{target}} = 0.4\,\text{N}$.
 
 | Metric | Formula | Description |
 |--------|---------|-------------|
@@ -195,8 +195,8 @@ All metrics are computed over steady-state data (`label_steady = 1`) for each pa
 | RMSE | $\sqrt{\frac{1}{n}\sum_{i=1}^{n}(F_i - F_{\text{target}})^2}$ | Root mean squared error vs target |
 | MAE | $\frac{1}{n}\sum_{i=1}^{n}\|F_i - F_{\text{target}}\|$ | Mean absolute error vs target |
 | CV | $\frac{\text{SD}(F)}{\overline{F}} \times 100$ | Coefficient of variation (%) |
-| ΔF | $\|\overline{F}_{\text{fwd}} - \overline{F}_{\text{bwd}}\|$ | Forward–backward hysteresis |
-| MASD | $\frac{1}{K}\sum_{k=1}^{K}\left(\frac{1}{n_k-1}\sum_{i=2}^{n_k}\|F_i^{(k)} - F_{i-1}^{(k)}\|\right)$ | Smoothness (per-cycle, then averaged) |
+| ΔF | $\|\overline{F}_{\text{fwd}} - \overline{F}_{\text{bwd}}\|$ | Hysteresis; forward--backward force asymmetry, computed from moving-phase data only (excluding turnaround stops) |
+| MASD | $\frac{1}{K}\sum_{k=1}^{K}\left(\frac{1}{n_k-1}\sum_{i=2}^{n_k}\|F_i^{(k)} - F_{i-1}^{(k)}\|\right)$ | Mean of adjacent-sample force changes per cycle. Lower values indicate temporally smoother force delivery. |
 
 **Reproducing the analysis:**
 
@@ -205,7 +205,7 @@ cd data/force
 python analyze_force.py
 ```
 
-No external dependencies required (Python 3.8+ standard library only). This reads all master CSVs and outputs `ral_statistics_reproduced.csv`. The script has been verified to produce identical results to `ral_statistics.csv` (1040/1040 values matched).
+No external dependencies required (Python 3.8+ standard library only). This reads all master CSVs and outputs `ral_statistics_reproduced.csv`. The script has been verified to produce identical results to `ral_statistics.csv` (1520/1520 values matched, 80 rows x 19 columns).
 
 ---
 
