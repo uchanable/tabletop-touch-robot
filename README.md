@@ -6,7 +6,7 @@ Resources for the paper: *A Tabletop Mobile Robot for CT-Optimal Touch: Force-Co
 
 | Directory | Description | Status |
 |-----------|-------------|--------|
-| `control/` | Robot control software (holonomic base, IMU heading PID, FF+PID force control, calibration) | Coming soon |
+| `control/` | Robot control software (holonomic base, IMU heading PID, FF+PID force control, calibration) | Available |
 | `data/` | Experiment raw data ($n = 20$): force recordings, EDA signals, questionnaire responses | Available |
 | `cad/` | CAD files for robot chassis, stroking module, parallel-linkage mechanism | Available |
 | `3d_scan/` | 20 participants' forearm 3D surface scans (OBJ + USDZ) | Pending |
